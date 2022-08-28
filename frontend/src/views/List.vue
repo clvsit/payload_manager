@@ -28,6 +28,9 @@ export default {
         return {
             info: {},
             title: "",
+            data: {
+                list: []
+            },
             table: {
                 titleConf: [
                     { name: "ID", width: "30%" },
@@ -40,12 +43,7 @@ export default {
                     edit: { show: true },
                     delete: { show: true }
                 },
-                data: [
-                    [
-                        {name: "id", value: "1231231236"},
-                        {name: "date", value: "2022-08-28"},
-                    ]
-                ],
+                data: [],
                 total: 0
             },
             show: {param: {}},
@@ -66,7 +64,8 @@ export default {
                 page: {
                     limit: 10,
                     current: 1
-                }
+                },
+                search: {}
             }
         }
     },
@@ -108,7 +107,7 @@ export default {
                 tableDataList.push([
                     { name: "id", value: data.id, hidden: false },
                     { name: "date", value: data.date, hidden: false },
-                    { name: this.show.param.key, value: data[this.show.param.key], hidden: false }
+                    { name: this.show.param.key, value: data.data[this.show.param.key], hidden: false }
                 ])
             }
             return tableDataList;
@@ -146,10 +145,10 @@ export default {
                         limit: this.input.page.limit
                     },
                     success(resp) {
-                        
-
                         if (resp.code === 1) {
-                            _this.selectDataTitleKey(resp.data.list);
+                            _this.data.list = resp.data.list;
+                            _this.table.data = _this.setTableData(resp.data.list);
+                            _this.table.total = resp.data.count;
                         }
                         
                     }
@@ -158,13 +157,13 @@ export default {
         },
         search(paramDict) {
             this.input.search = paramDict;
-            this.request("get_group_list");
+            this.request("get_data_list");
         },
         tableHandle(data) {
             const method = data.method;
 
             if (method === "refresh") {
-                this.request("get_version_list");
+                this.request("get_data_list");
             }
             else if (method === "add") {
                 window.open("#/detail?title=" + this.title);
@@ -172,12 +171,10 @@ export default {
             else if (method === "table") {
                 const type = data.type;
 
-                this.data.version.select = { ...this.data.version.list[data.idx] };
+                this.data.select = { ...this.data.list[data.idx] };
 
                 if (type === "edit") {
-                    $("#modalVersionEdit").modal({
-                        backdrop: "static"
-                    });
+                    window.open("#/detail?title=" + this.title + "&id=" + this.data.select.id);
                 }
                 else if (type === "del") {
                     $("#modalVersionDelete").modal({
@@ -187,11 +184,11 @@ export default {
             }
             else if (method === "skip") {
                 this.input.page = data.page;
-                this.request("get_version_list");
+                this.request("get_data_list");
             }
             else if (method === "limit") {
                 this.input.page.limit = data.page.limit;
-                this.request("get_version_list");
+                this.request("get_data_list");
             }
         }
     }

@@ -2,17 +2,16 @@
     <div class="payload-detail">
 
         <div class="payload-detail-header">
-            <div class="btn btn-default"></div>
             <h3 v-text="title"></h3>
         </div>
 
         <div class="payload-detail-body">
             <div class="btn-group">
-                <div class="btn btn-default">
+                <div @click="request('add_data')" class="btn btn-default">
                     <i class="glyphicon glyphicon-plus"></i>
                     添加
                 </div>
-                <div class="btn btn-default">
+                <div @click="clear" class="btn btn-default">
                     <i class="glyphicon glyphicon-refresh"></i>
                     清空
                 </div>
@@ -58,19 +57,29 @@ export default {
     name: "Detail",
     data() {
         return {
+            info: {},
             inputList: [],
-            title: ""
+            title: "",
+            id: ""
         }
     },
     created() {
         let _this = this;
 
         this.title = this.$route.query.title;
+        this.id = this.$route.query.id;
         this.$nextTick(() => {
             _this.request("get_config");
         });
     },
     methods: {
+        clear() {
+            for (let i = 0, len = this.inputList.length; i < len; i++) {
+                const inputItem = this.inputList[i];
+
+                inputItem.input = "";
+            }
+        },
         request(type) {
             let _this = this;
 
@@ -93,7 +102,59 @@ export default {
                                 });
                             }
                         }
+                        _this.info = detailDict;
                         _this.inputList = inputList;
+                        if (_this.id) {
+                            _this.request("get_data");
+                        }
+                    }
+                })
+            }
+            if (type === "get_data") {
+                $.ajax({
+                    method: "GET",
+                    url: "http://localhost:6869/data/get",
+                    data: {
+                        table: this.info.table,
+                        id: this.id
+                    },
+                    success(resp) {
+                        const dataDict = resp.data.detail.data;
+
+                        for (let i = 0, len = _this.inputList.length; i < len; i++) {
+                            const inputItem = _this.inputList[i];
+
+                            inputItem.input = dataDict[inputItem.key];
+                        }
+                    }
+                })
+            }
+            else if (type === "add_data") {
+                let inputData = {};
+
+                for (let i = 0, len = this.inputList.length; i < len; i++) {
+                    const inputItem = this.inputList[i];
+
+                    inputData[inputItem.key] = inputItem.input;
+                }
+
+                $.ajax({
+                    method: "POST",
+                    url: "http://localhost:6869/data/add",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    dataType: "JSON",
+                    data: JSON.stringify({
+                        table: this.info.table,
+                        data: inputData
+                    }),
+                    success(resp) {
+                        console.log(resp);
+
+                        if (resp.code === 1) {
+
+                        }
                     }
                 })
             }

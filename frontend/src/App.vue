@@ -36,6 +36,7 @@
 
   .right-body {
     padding: 10px 20px;
+    overflow: auto;
   }
 }
 
