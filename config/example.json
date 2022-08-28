@@ -1,0 +1,31 @@
+{
+    "title": "个人信息",
+    "table": "person",
+    "show": {
+        "title": "name"
+    },
+    "data": [
+        {
+            "name": "姓名",
+            "type": "text",
+            "key": "name",
+            "default": "clvsit"
+        },
+        {
+            "name": "年龄",
+            "type": "number",
+            "key": "age",
+            "default": "27"
+        },
+        {
+            "name": "省份",
+            "type": "select",
+            "key": "province",
+            "default": "zhejiang",
+            "optionList": [
+                { "key": "浙江", "value": "zhejiang" },
+                { "key": "江苏", "value": "jiangshu" }
+            ]
+        }
+    ]
+}

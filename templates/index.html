@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>测试客户端</title>
+    <link href="/static/extern/bootstrap-3.3.7/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="/static/style/base.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class="left-sidebar">
+            <div class="left-header">
+                <h2 class="text-center">PayLoad</h3>
+            </div>
+            <div class="left-body">
+                <div @click="choose" class="left-nav">
+                    <div class="left-nav-group" v-for="(nav, nIdx) in navList" :key="nIdx">
+                        <div class="left-nav-group-name">
+                            <div v-text="nav.name"></div>
+                        </div>
+                        <ul class="left-nav-group-list">
+                            <li class="left-nav-group-item" v-for="(item, idx) in nav.group" :key="idx" :data-url="item.url">
+                                <i class="glyphicon mr-5" :class="item.icon"></i>
+                                <span v-text="item.name"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="right-header">
+                
+            </div>
+
+            <div class="right-body">
+
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="/static/extern/jquery.min.js"></script>
+    <script src="/static/script/vue.min.js"></script>
+    <script src="/static/script/page/index.js"></script>
+</body>
+</html>
