@@ -116,6 +116,7 @@ export default {
     },
     watch: {
         $route() {
+            console.log(this.$route);
             this.title = this.$route.query.title;
             this.request("get_config");
         }

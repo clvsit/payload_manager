@@ -1,6 +1,6 @@
 {
-    "title": "测试用例",
-    "table": "test",
+    "title": "测试用例2",
+    "table": "test2",
     "show": {
         "param": "name"
     },
@@ -23,8 +23,8 @@
             "key": "province",
             "default": "zhejiang",
             "optionList": [
-                { "text": "浙江", "value": "zhejiang" },
-                { "text": "江苏", "value": "jiangshu" }
+                { "key": "浙江", "value": "zhejiang" },
+                { "key": "江苏", "value": "jiangshu" }
             ]
         }
     ]

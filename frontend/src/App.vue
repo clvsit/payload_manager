@@ -12,47 +12,6 @@
   // background-color: #f5f7fb;
 }
 
-.right-container {
-  width: calc(100% - 299px);
-  height: 100%;
-  background-color: #fff;
-
-  .right-header {
-    width: 100%;
-    height: 60px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-
-    .navbar {
-      // display: flex;
-      // flex-direction: row;
-      // justify-content: space-between;
-    }
-
-    .breadcrumb {
-      width: 90%;
-      height: 100%;
-      line-height: 40px;
-      margin-bottom: 0;
-      background-color: #fff;
-    }
-
-
-    .avatar {
-      width: 40px;
-      height: 40px;
-      margin-top: 10px;
-      margin-right: 20px;
-      border-radius: 20px;
-      background-color: #000;
-    }
-  }
-
-  .right-body {
-    padding: 10px 20px;
-    overflow: auto;
-  }
-}
-
 .mt-20 {
   margin-top: 20px !important;
 }

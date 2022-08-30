@@ -20,6 +20,13 @@
                                 </label>
                                 <input v-model="item.input" type="text" class="form-control" />
                             </div>
+                            <div v-else-if="item.type === 'password'">
+                                <label class="control-label">
+                                    <span v-if="item.required" class="color-red">★</span>
+                                    <span v-text="item.name"></span>
+                                </label>
+                                <input v-model="item.input" type="password" class="form-control" />
+                            </div>
                             <div v-else-if="item.type === 'number'">
                                 <label class="control-label">
                                     <span v-if="item.required" class="color-red">★</span>

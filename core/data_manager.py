@@ -1,7 +1,6 @@
 import traceback
 import uuid
 import json
-from typing import List
 from loguru import logger
 
 from core.utils.mongo_helper import MongoHelper

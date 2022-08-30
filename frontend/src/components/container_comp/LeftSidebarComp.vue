@@ -29,19 +29,14 @@ export default {
     name: 'LeftSiderbarComp',
     data() {
         return {
-            navList: [
-                {
-                    name: "数据管理",
-                    group: []
-                }
-            ]
+            navList: []
         }
     },
     created() {
         let _this = this;
 
         this.$nextTick(() => {
-            _this.request("get_data_list");
+            _this.request("get_config_list");
         });
     },
     methods: {
@@ -54,34 +49,32 @@ export default {
             if (target.tagName === "I" || target.tagName === "SPAN") {
                 urlEle = target.parentElement;
                 this.$router.push(urlEle.getAttribute("data-url"));
-                // window.open(urlEle.getAttribute("data-url"), "_top");
                 urlEle.classList.add("left-nav-group-item-click");
             } else if (target.tagName === "LI") {
                 urlEle = target;
                 this.$router.push(urlEle.getAttribute("data-url"));
-                // window.open(urlEle.getAttribute("data-url"));
                 urlEle.classList.add("left-nav-group-item-click");
             }
         },
         request(type) {
             let _this = this;
 
-            if (type === "get_data_list") {
+            if (type === "get_config_list") {
+                const token = sessionStorage.getItem("token");
+
                 $.ajax({
-                    method: "GET",
+                    method: "POST",
                     url: "http://192.168.121.127:6869/config/list",
-                    data: {},
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    dataType: "JSON",
+                    data: JSON.stringify({
+                        token: token
+                    }),
                     success(resp) {
-                        let groupList = [];
-                        console.log(resp);
                         if (resp.code === 1) {
-                            for (let i = 0, len = resp.data.list.length; i < len; i++) {
-                                groupList.push({
-                                    name: resp.data.list[i].title,
-                                    url: "list?title=" + resp.data.list[i].title
-                                })
-                            }
-                            _this.navList[0].group = groupList;
+                            _this.navList = resp.data.list;
                         }
                     }
                 })

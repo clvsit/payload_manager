@@ -17,13 +17,12 @@
                             <li class="dropdown">
                                 <div class="avatar" data-toggle="dropdown" role="button" aria-haspopup="true"
                                     aria-expanded="false">
+                                    <i class="glyphicon glyphicon-user"></i>
                                 </div>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
+                                    <li><a href="#">暂未实现</a></li>
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="#/login">注销账户</a></li>
+                                    <li @click="logout"><a href="javascript:;">注销账户</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -32,7 +31,9 @@
                 </nav>
             </div>
             <div class="right-body">
-                <router-view />
+                <transition name="fade">
+                    <router-view />
+                </transition>
             </div>
         </div>
     </div>
@@ -45,6 +46,11 @@ export default {
     name: 'Home',
     components: {
         LeftSidebarComp
+    },
+    data() {
+        return {
+
+        }
     },
     created() {
         let _this = this;
@@ -63,6 +69,28 @@ export default {
             document.getElementById("app").style.height = (height - 1) + "px";
             $(".right-body").height(height - 101);
         },
+        logout() {
+            let _this = this;
+
+            $.ajax({
+                method: "POST",
+                url: "http://192.168.121.127:6869/api/logout",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                dataType: "JSON",
+                data: JSON.stringify({
+                    token: sessionStorage.getItem("token")
+                }),
+                success(resp) {
+                    _this.$router.replace("/login");
+                    sessionStorage.removeItem("token");
+                },
+                error(err) {
+                    _this.$router.replace("/login");
+                }
+            })
+        }
     },
 }
 </script>
@@ -82,5 +110,58 @@ export default {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     border-radius: 0;
     background: rgba(0, 0, 0, 0.1);
+}
+
+.right-container {
+    width: calc(100% - 299px);
+    height: 100%;
+    background-color: #fff;
+
+    .right-header {
+        width: 100%;
+        height: 60px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+        .navbar {
+            // display: flex;
+            // flex-direction: row;
+            // justify-content: space-between;
+        }
+
+        .breadcrumb {
+            width: 90%;
+            height: 100%;
+            line-height: 40px;
+            margin-bottom: 0;
+            background-color: #fff;
+        }
+
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            margin-top: 10px;
+            margin-right: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: all 0.5s ease-in-out;
+
+            i {
+                font-size: 26px;
+                line-height: 40px;
+            }
+        }
+
+        .avatar:hover {
+            transform: scale(1.1, 1.1);
+            box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.7);
+        }
+    }
+
+    .right-body {
+        padding: 10px 20px;
+        overflow: auto;
+    }
 }
 </style>

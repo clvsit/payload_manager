@@ -6,6 +6,7 @@ from loguru import logger
 
 from core.config_manager import ConfigManager
 from core.data_manager import DataManager
+from core.user_manager import UserManager
 
 
 app = Flask(__name__)
@@ -20,14 +21,25 @@ def init():
     
     if "database" not in config_dict:
         raise Exception("请在 system.json 配置文件中设置 mongodb 数据库的 url 和 db 字段")
+    if "account" not in config_dict:
+        account_config = {
+            "username": "root",
+            "password": "admin"
+        }
+    else:
+        account_config = {
+            "username": config_dict["account"].get("username", "root"),
+            "password": config_dict["account"].get("password", "admin")
+        }
 
     data_manager = DataManager(db_config=config_dict["database"])
+    user_manager = UserManager(account_config, db_config=config_dict["database"])
     config_manager = ConfigManager()
 
-    return config_manager, data_manager
+    return config_manager, data_manager, user_manager
 
 
-config_manager, data_manager = init()
+config_manager, data_manager, user_manager = init()
 
 
 @app.route('/', methods=['GET'])
@@ -35,13 +47,57 @@ def page_index():
     return render_template("index.html")
 
 
-@app.route("/config/list", methods=["GET"])
-def get_config_list():
-    if request.method != "GET":
+@app.route("/api/login", methods=["POST"])
+def login():
+    if request.method != "POST":
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
+    try:
+        request_json = request.json
+        username = request_json["username"]
+        password = request_json["password"]
+        resp = user_manager.login(username, password)
+
+        if resp["code"] != 1:
+            return {"code": 0, "msg": resp["msg"], "data": {}}
+        else:
+            return {"code": 1, "msg": "登录成功！", "data": resp["data"]}
+    except Exception as error:
+        logger.error(f"Failed to login! reason: {error}")
+        return {"code": 0, "msg": "登录失败！", "data": {}}
+
+
+@app.route("/api/logout", methods=["POST"])
+def logout():
+    if request.method != "POST":
+        return {"code": 0, "msg": "请求的方法有误！", "data": {}}
+
+    try:
+        request_json = request.json
+        token = request_json["token"]
+        is_logout = user_manager.logout(token)
+
+        return {"code": 1, "msg": "注销成功！", "data": {}} if is_logout else {"code": 0, "msg": "注销失败", "data": {}}
+    except Exception as error:
+        logger.error(f"Failed to logout! reason: {error}")
+        return {"code": 0, "msg": "注销失败！", "data": {}}
+
+
+@app.route("/config/list", methods=["POST"])
+def get_config_list():
+    if request.method != "POST":
+        return {"code": 0, "msg": "请求的方法有误！", "data": {}}
+    
+    request_json = request.json
+    check_resp = user_manager.check_login(request_json.get("token"))
+    
+    if check_resp["code"] == 0:
+        return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+
+    role = check_resp["data"]["role"]
+    auth = check_resp["data"].get("user", {}).get("auth", [])
     config_manager.refresh()
-    return {"code": 1, "msg": "获取配置文件内容成功！", "data": {"list": config_manager.get_all_config_title()}}
+    return {"code": 1, "msg": "获取配置文件内容成功！", "data": {"list": config_manager.get_all_config_title(role, auth)}}
 
 
 @app.route("/config/get", methods=["GET"])
@@ -51,6 +107,7 @@ def get_special_config():
 
     title = request.args.get("title")
     config_dict = config_manager.get_special_config(title=title)
+    print(config_dict)
     return {"code": 1, "msg": "获取配置文件内容成功！", "data": {"detail": config_dict}}
 
 
