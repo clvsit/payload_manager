@@ -1,0 +1,10 @@
+{
+    "account": {
+        "username": "clvsit",
+        "password": "zxc123"
+    },
+    "database": {
+        "url": "mongodb://root:example@124.220.9.36:27017/",
+        "db": "payload"
+    }   
+}

@@ -1,10 +1,10 @@
 <template>
     <div class="left-sidebar">
         <div class="left-header">
-            <h3 class="text-center">
-                <img style="width: 30px; background-color: #fff;" src="~@/assets/images/brand.png" />
-                Poseidon
-            </h3>
+            <h1 class="text-center">
+                <!-- <img style="width: 30px; background-color: #fff;" src="~@/assets/images/brand.png" /> -->
+                PayLoad
+            </h1>
         </div>
         <div class="left-body">
             <div @click="choose" class="left-nav">
@@ -54,10 +54,12 @@ export default {
             if (target.tagName === "I" || target.tagName === "SPAN") {
                 urlEle = target.parentElement;
                 this.$router.push(urlEle.getAttribute("data-url"));
+                // window.open(urlEle.getAttribute("data-url"), "_top");
                 urlEle.classList.add("left-nav-group-item-click");
             } else if (target.tagName === "LI") {
                 urlEle = target;
                 this.$router.push(urlEle.getAttribute("data-url"));
+                // window.open(urlEle.getAttribute("data-url"));
                 urlEle.classList.add("left-nav-group-item-click");
             }
         },
@@ -67,7 +69,7 @@ export default {
             if (type === "get_data_list") {
                 $.ajax({
                     method: "GET",
-                    url: "http://localhost:6869/config/list",
+                    url: "http://192.168.121.127:6869/config/list",
                     data: {},
                     success(resp) {
                         let groupList = [];

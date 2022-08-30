@@ -1,4 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import Login from '../views/Login.vue'
+import NotFound from '../views/NotFound.vue'
 import Home from '../views/Index.vue'
 import List from "../views/List.vue"
 import Detail from "../views/Detail.vue"
@@ -7,18 +9,26 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: "list",
+        name: "List",
+        component: List
+      },
+      {
+        path: "detail",
+        name: "Detail",
+        component: Detail
+      }
+    ]
   },
   {
-    path: "/list",
-    name: "List",
-    component: List
+    path: '/login',
+    name: 'Login',
+    component: Login
   },
-  {
-    path: "/detail",
-    name: "Detail",
-    component: Detail
-  }
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
   // {
   //   path: '/about',
   //   name: 'About',

@@ -80,7 +80,7 @@
             </div>
         </div>
         <div v-else class="text-center">
-            <img src="~@/assets/images/no-content.jpg" />
+            <img class="no-content" src="~@/assets/images/no-content.png" />
         </div>
 
         <!-- 表格底部：页码与跳页 -->
@@ -329,6 +329,11 @@ export default {
                 border: 1px solid #e5e5e5;
             }
         }
+    }
+
+    .no-content {
+        height: 320px;
+        margin-bottom: 30px;
     }
 
     .table-footer {

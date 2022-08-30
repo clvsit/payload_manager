@@ -1,15 +1,5 @@
 <template>
-  <div class="body">
-    <left-sidebar-comp></left-sidebar-comp>
-    <div class="right-container">
-      <div class="right-header">
-        
-      </div>
-      <div class="right-body">
-        <router-view />
-      </div>
-    </div>
-  </div>
+  <router-view></router-view>
 </template>
 
 <style lang="scss">
@@ -31,7 +21,30 @@
     width: 100%;
     height: 60px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    // box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.3);
+
+    .navbar {
+      // display: flex;
+      // flex-direction: row;
+      // justify-content: space-between;
+    }
+
+    .breadcrumb {
+      width: 90%;
+      height: 100%;
+      line-height: 40px;
+      margin-bottom: 0;
+      background-color: #fff;
+    }
+
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      margin-top: 10px;
+      margin-right: 20px;
+      border-radius: 20px;
+      background-color: #000;
+    }
   }
 
   .right-body {
@@ -50,6 +63,25 @@
 
 .mr-10 {
   margin-right: 10px !important;
+}
+
+.mr-20 {
+  margin-right: 20px !important;
+}
+
+.pl-10 {
+  padding-left: 10px !important;
+}
+
+.ellipsis {
+  // width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.color-red {
+  color: #f00;
 }
 </style>
 

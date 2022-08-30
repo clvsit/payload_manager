@@ -8,28 +8,63 @@
         <div class="payload-list-body">
             <input-comp v-on:search="search" :inputList="inputList"></input-comp>
             <div class="data-area">
-                <table-comp v-on:handle="tableHandle" :table="table" ref="tableComp"></table-comp>
+                <table-comp v-if="data.status !== 0" v-on:handle="tableHandle" :table="table" ref="tableComp">
+                </table-comp>
+                <loading-comp v-else></loading-comp>
             </div>
         </div>
+
+        <!-- 删除数据弹窗 -->
+        <div id="modalDelete" class="modal fade" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">删除数据</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert-message">
+                            是否删除当前数据 <span class="color-red" v-text="data.select.id"></span>？
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            <i class="glyphicon glyphicon-remove mr-5"></i>关闭
+                        </button>
+                        <button @click="request('delete_data')" type="button" class="btn btn-default">
+                            <i class="glyphicon glyphicon-trash mr-5"></i>删除
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <message-popup ref="popup"></message-popup>
+
     </div>
 </template>
 
 <script>
 import InputComp from "../components/input_comp/InputComp.vue";
 import TableComp from '../components/container_comp/TableComp.vue';
+import LoadingComp from "../components/LoadingComp.vue";
+import MessagePopup from "../components/MessagePopup.vue";
 
 export default {
     name: "List",
     components: {
         InputComp,
-        TableComp
+        TableComp,
+        LoadingComp,
+        MessagePopup
     },
     data() {
         return {
             info: {},
             title: "",
             data: {
-                list: []
+                status: 1,  // 0: 正在加载中, 1: 加载完毕
+                list: [],
+                select: {}
             },
             table: {
                 titleConf: [
@@ -46,7 +81,7 @@ export default {
                 data: [],
                 total: 0
             },
-            show: {param: {}},
+            show: { param: {} },
             inputList: [
                 {
                     "title": "ID",
@@ -77,22 +112,35 @@ export default {
             _this.setHeight();
             _this.request("get_config");
         });
+
+    },
+    watch: {
+        $route() {
+            this.title = this.$route.query.title;
+            this.request("get_config");
+        }
     },
     methods: {
         setHeight() {
             let height = document.documentElement.clientHeight;
             document.getElementById("app").style.height = (height - 1) + "px";
-            $(".right-body").height(height - 101);
+            $(".data-area").height(height - 271);
         },
         selectDataTitleKey(dataList) {
-            const showTitle = this.info.show.title;
+            const showTitle = this.info.show.param;
 
             for (let i = 0, len = dataList.length; i < len; i++) {
                 if (dataList[i].key === showTitle) {
-                    this.table.titleConf.push({
+                    const copyTitleConf = [
+                        { name: "ID", width: "30%" },
+                        { name: "修改时间", width: "15%" },
+                    ];
+
+                    copyTitleConf.push({
                         name: dataList[i].name,
                         width: "55%"
                     });
+                    this.table.titleConf = copyTitleConf;
                     this.show.param = dataList[i];
                     break;
                 }
@@ -106,7 +154,7 @@ export default {
 
                 tableDataList.push([
                     { name: "id", value: data.id, hidden: false },
-                    { name: "date", value: data.date, hidden: false },
+                    { name: "date", value: data.date.modify, hidden: false },
                     { name: this.show.param.key, value: data.data[this.show.param.key], hidden: false }
                 ])
             }
@@ -118,7 +166,7 @@ export default {
             if (type === "get_config") {
                 $.ajax({
                     method: "GET",
-                    url: "http://localhost:6869/config/get",
+                    url: "http://192.168.121.127:6869/config/get",
                     data: {
                         title: this.title
                     },
@@ -130,29 +178,66 @@ export default {
                             _this.selectDataTitleKey(detailDict.data);
                             _this.request("get_data_list");
                         }
-                        
+
                     }
                 })
             }
             else if (type === "get_data_list") {
-                $.ajax({
-                    method: "GET",
-                    url: "http://localhost:6869/data/list",
-                    data: {
-                        table: this.info.table,
-                        query: JSON.stringify(this.input.search),
-                        offset: (this.input.page.current - 1) * this.input.page.limit,
-                        limit: this.input.page.limit
-                    },
-                    success(resp) {
-                        if (resp.code === 1) {
-                            _this.data.list = resp.data.list;
-                            _this.table.data = _this.setTableData(resp.data.list);
-                            _this.table.total = resp.data.count;
+                this.data.status = 0;
+                setTimeout(() => {
+                    $.ajax({
+                        method: "GET",
+                        url: "http://192.168.121.127:6869/data/list",
+                        data: {
+                            table: this.info.table,
+                            query: JSON.stringify(this.input.search),
+                            offset: (this.input.page.current - 1) * this.input.page.limit,
+                            limit: this.input.page.limit
+                        },
+                        success(resp) {
+                            _this.data.status = 1;
+                            if (resp.code === 1) {
+                                _this.data.list = resp.data.list;
+                                _this.table.data = _this.setTableData(resp.data.list);
+                                _this.table.total = resp.data.count;
+                            }
+
                         }
-                        
-                    }
-                })
+                    })
+                }, 1000);
+            }
+            else if (type === "delete_data") {
+                $("#modalDelete").modal("hide");
+                this.$refs.popup.open("default", "正在删除数据中，请稍等......");
+
+                setTimeout(() => {
+                    $.ajax({
+                        method: "POST",
+                        url: "http://192.168.121.127:6869/data/delete",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        dataType: "JSON",
+                        data: JSON.stringify({
+                            table: this.info.table,
+                            id: this.data.select.id
+                        }),
+                        success(resp) {
+                            if (resp.code === 1) {
+                                _this.$refs.popup.setAll("success", resp.msg);
+                                _this.request("get_data_list");
+                                setTimeout(() => {
+                                    _this.$refs.popup.close();
+                                }, 3000);
+                            } else {
+                                _this.$refs.popup.setAll("error", resp.msg);
+                            }
+                        },
+                        error(err) {
+                            _this.$refs.popup.setAll("error", err.statusText);
+                        }
+                    });
+                }, 1000);
             }
         },
         search(paramDict) {
@@ -166,7 +251,7 @@ export default {
                 this.request("get_data_list");
             }
             else if (method === "add") {
-                window.open("#/detail?title=" + this.title);
+                this.$router.push("detail?type=add&title=" + this.title);
             }
             else if (method === "table") {
                 const type = data.type;
@@ -174,10 +259,10 @@ export default {
                 this.data.select = { ...this.data.list[data.idx] };
 
                 if (type === "edit") {
-                    window.open("#/detail?title=" + this.title + "&id=" + this.data.select.id);
+                    this.$router.push("detail?type=edit&title=" + this.title + "&id=" + this.data.select.id);
                 }
                 else if (type === "del") {
-                    $("#modalVersionDelete").modal({
+                    $("#modalDelete").modal({
                         backdrop: "static"
                     });
                 }
@@ -207,9 +292,12 @@ export default {
         margin-top: 20px;
 
         .data-area {
+            position: relative;
+            width: 100%;
             margin-top: 20px;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
+
     }
 }
 </style>

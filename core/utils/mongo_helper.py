@@ -6,16 +6,11 @@ from loguru import logger
 
 class MongoHelper:
     
-    def __init__(self):
-        user = "root"
-        pwd = "admin"
-        config = {"host": "124.220.9.36", "port": "27017", "db_name": "admin"}
-        client = pymongo.MongoClient(f"mongodb://{user}:{pwd}@{config['host']}:{config['port']}/")
-        
-        # db_list = client.list_database_names()
-        db_name = config["db_name"]
-        # self.__db_obj = client[db_name] if db_name in db_list else None
-        self.__db_obj = client[db_name]
+    def __init__(self, url: str, db_name: str):
+        client = pymongo.MongoClient(url)
+        db_list = client.list_database_names()
+
+        self.__db_obj = client[db_name] if db_name in db_list else None
         self.__col = None
 
     def list_collection(self) -> List[str]:
