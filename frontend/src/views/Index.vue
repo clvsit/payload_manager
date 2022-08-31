@@ -10,9 +10,7 @@
             <li class="active">Data</li>
           </ol> -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <!-- <div class="btn btn-default mt-10">
-              <i class="glyphicon glyphicon-share-alt"></i>
-            </div> -->
+                        <i @click="this.$router.back();" class="glyphicon glyphicon-share-alt btn-back" data-toggle="tooltip" data-placement="right" title="返回"></i>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
                                 <div class="avatar" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -31,9 +29,11 @@
                 </nav>
             </div>
             <div class="right-body">
-                <transition name="fade">
-                    <router-view />
-                </transition>
+                <router-view v-slot="{ Component }">
+                    <transition name="fade" mode="out-in">
+                        <component :is="Component" />
+                    </transition>
+                </router-view>
             </div>
         </div>
     </div>
@@ -136,6 +136,15 @@ export default {
             background-color: #fff;
         }
 
+        .btn-back {
+            position: relative;
+            top: 15px;
+            left: 10px;
+            font-size: 24px;
+            transform: rotateY(180deg);
+            cursor: pointer;
+        }
+
 
         .avatar {
             width: 40px;
@@ -163,5 +172,13 @@ export default {
         padding: 10px 20px;
         overflow: auto;
     }
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

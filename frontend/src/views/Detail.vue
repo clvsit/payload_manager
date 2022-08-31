@@ -2,14 +2,14 @@
     <div class="payload-detail">
 
         <div class="payload-detail-header">
-            <h3 v-if="type === 'add'" v-text="title"></h3>
-            <h3 v-else-if="type === 'edit'" v-text="title + '：' + id"></h3>
+            <h3 v-if="param.type === 'add'" v-text="info.title"></h3>
+            <h3 v-else-if="param.type === 'edit'" v-text="info.title + '：' + param.id"></h3>
         </div>
 
         <div class="payload-detail-body">
 
             <div id="inputArea" class="row mt-20">
-                <div class="col-md-7 input-area">
+                <div class="col-md-8 input-area">
                     <form class="form">
 
                         <div class="form-group" v-for="(item, idx) in inputList" :key="idx">
@@ -61,34 +61,34 @@
                         </div>
                     </form>
                 </div>
-                <div class="col-md-5 info-area">
+                <div class="col-md-4 info-area">
                     <div class="btn-group info-op-area">
-                        <div v-if="type === 'add'" @click="request('add_data'); this.other.addStatus = 0;" class="btn btn-default">
+                        <div v-if="param.type === 'add'" @click="request('add_data'); this.other.addStatus = 0;" class="btn btn-default">
                             <i class="glyphicon glyphicon-plus"></i>
                             添加后返回
                         </div>
-                        <div v-if="type === 'add'" @click="request('add_data'); this.other.addStatus = 1;" class="btn btn-default">
+                        <div v-if="param.type === 'add'" @click="request('add_data'); this.other.addStatus = 1;" class="btn btn-default">
                             <i class="glyphicon glyphicon-plus"></i>
                             添加后前往
                         </div>
-                        <div v-else-if="type === 'edit'" @click="request('update_data')" class="btn btn-default">
+                        <div v-else-if="param.type === 'edit'" @click="request('update_data')" class="btn btn-default">
                             <i class="glyphicon glyphicon-plus"></i>
                             保存
                         </div>
-                        <div v-if="type === 'add'" @click="clear" class="btn btn-default">
+                        <div v-if="param.type === 'add'" @click="clear" class="btn btn-default">
                             <i class="glyphicon glyphicon-refresh"></i>
                             清空
                         </div>
-                        <div v-if="type === 'edit'" @click="openPopup('copy')" class="btn btn-default">
+                        <div v-if="param.type === 'edit'" @click="openPopup('copy')" class="btn btn-default">
                             <i class="glyphicon glyphicon-duplicate"></i>
                             复制
                         </div>
-                        <div v-if="type === 'edit'" @click="openPopup('delete')" class="btn btn-default">
+                        <div v-if="param.type === 'edit'" @click="openPopup('delete')" class="btn btn-default">
                             <i class="glyphicon glyphicon-trash"></i>
                             删除
                         </div>
                     </div>
-                    <div v-if="type === 'edit'" class="info-list">
+                    <div v-if="param.type === 'edit'" class="info-list">
                         <div class="info-item">
                             <div class="info-item-name">
                                 <span class="mr-5">API URL</span>
@@ -97,9 +97,9 @@
                             </div>
                             <div class="info-item-value">
                                 <a id="apiUrl" class="ellipsis"
-                                    :href="'http://localhost:6869/api/' + this.info.table + '/' + this.id"
+                                    :href="'http://localhost:6869/api/' + this.info.table + '/' + this.param.id"
                                     target="_blank"
-                                    v-text="'http://localhost:6869/api/' + this.info.table + '/' + this.id"></a>
+                                    v-text="'http://localhost:6869/api/' + this.info.table + '/' + this.param.id"></a>
                             </div>
                         </div>
                         <div class="info-item">
@@ -188,9 +188,11 @@ export default {
                 date: {}
             },
             inputList: [],
-            title: "",
-            id: "",
-            type: "",
+            param: {
+                table: "",
+                id: "",
+                type: ""
+            },
 
             // 其他变量设置
             other: {
@@ -203,9 +205,11 @@ export default {
     created() {
         let _this = this;
 
-        this.title = this.$route.query.title;
-        this.id = this.$route.query.id;
-        this.type = this.$route.query.type;
+        this.param = {
+            table: this.$route.params.table,
+            id: this.$route.params.id,
+            type: this.$route.params.type
+        };
         this.$nextTick(() => {
             _this.setHeight();
             _this.request("get_config");
@@ -214,9 +218,11 @@ export default {
     },
     watch: {
         $route() {
-            this.title = this.$route.query.title;
-            this.id = this.$route.query.id;
-            this.type = this.$route.query.type;
+            this.param = {
+                table: this.$route.params.table,
+                id: this.$route.params.id,
+                type: this.$route.params.type
+            };
             this.request("get_config");
         }
     },
@@ -241,7 +247,7 @@ export default {
             const inputDom = document.createElement('input');
 
             document.body.appendChild(inputDom);
-            inputDom.setAttribute('value', "http://localhost:6869/api/" + this.info.table + "/" + this.id);
+            inputDom.setAttribute('value', "http://192.168.121.127:6869/api/" + this.info.table + "/" + this.param.id);
             inputDom.select();
             document.execCommand("copy"); // 执行浏览器复制命令
             if (document.execCommand('copy')) {
@@ -255,9 +261,9 @@ export default {
             if (type === "get_config") {
                 $.ajax({
                     method: "GET",
-                    url: "http://192.168.121.127:6869/config/get",
+                    url: "http://192.168.121.127:6869/api/config/get",
                     data: {
-                        title: this.title
+                        table: this.param.table
                     },
                     success(resp) {
                         const detailDict = resp.data.detail;
@@ -495,9 +501,11 @@ export default {
                 position: absolute;
                 bottom: 20px;
                 left: 30px;
+                width: 90%;
                 height: 200px;
 
                 .info-item {
+                    width: 100%;
                     height: 60px;
                     margin-top: 10px;
 
@@ -512,10 +520,15 @@ export default {
                     }
 
                     .info-item-value {
+                        // width: 80%;
                         margin-top: 10px;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
+
+                        a {
+                            width: 100%;
+                        }
                     }
                 }
 

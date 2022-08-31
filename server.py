@@ -83,7 +83,7 @@ def logout():
         return {"code": 0, "msg": "注销失败！", "data": {}}
 
 
-@app.route("/config/list", methods=["POST"])
+@app.route("/api/config/list", methods=["POST"])
 def get_config_list():
     if request.method != "POST":
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
@@ -100,13 +100,13 @@ def get_config_list():
     return {"code": 1, "msg": "获取配置文件内容成功！", "data": {"list": config_manager.get_all_config_title(role, auth)}}
 
 
-@app.route("/config/get", methods=["GET"])
+@app.route("/api/config/get", methods=["GET"])
 def get_special_config():
     if request.method != "GET":
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
-    title = request.args.get("title")
-    config_dict = config_manager.get_special_config(title=title)
+    table = request.args.get("table")
+    config_dict = config_manager.get_special_config(table=table)
     print(config_dict)
     return {"code": 1, "msg": "获取配置文件内容成功！", "data": {"detail": config_dict}}
 

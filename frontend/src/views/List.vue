@@ -2,7 +2,7 @@
     <div class="payload-list">
 
         <div class="payload-list-header">
-            <h3 v-text="title"></h3>
+            <h3 v-text="info.title"></h3>
         </div>
 
         <div class="payload-list-body">
@@ -60,7 +60,6 @@ export default {
     data() {
         return {
             info: {},
-            title: "",
             data: {
                 status: 1,  // 0: 正在加载中, 1: 加载完毕
                 list: [],
@@ -107,7 +106,7 @@ export default {
     created() {
         let _this = this;
 
-        this.title = this.$route.query.title;
+        this.info.table = this.$route.params.table;
         this.$nextTick(() => {
             _this.setHeight();
             _this.request("get_config");
@@ -117,7 +116,7 @@ export default {
     watch: {
         $route() {
             console.log(this.$route);
-            this.title = this.$route.query.title;
+            this.info.table = this.$route.params.table;
             this.request("get_config");
         }
     },
@@ -167,9 +166,9 @@ export default {
             if (type === "get_config") {
                 $.ajax({
                     method: "GET",
-                    url: "http://192.168.121.127:6869/config/get",
+                    url: "http://192.168.121.127:6869/api/config/get",
                     data: {
-                        title: this.title
+                        table: this.info.table
                     },
                     success(resp) {
                         const detailDict = resp.data.detail;
@@ -252,7 +251,7 @@ export default {
                 this.request("get_data_list");
             }
             else if (method === "add") {
-                this.$router.push("detail?type=add&title=" + this.title);
+                this.$router.push("/detail/" + this.info.table + "/add/1");
             }
             else if (method === "table") {
                 const type = data.type;
@@ -260,7 +259,7 @@ export default {
                 this.data.select = { ...this.data.list[data.idx] };
 
                 if (type === "edit") {
-                    this.$router.push("detail?type=edit&title=" + this.title + "&id=" + this.data.select.id);
+                    this.$router.push("/detail/" + this.info.table + "/edit/" + this.data.select.id);
                 }
                 else if (type === "del") {
                     $("#modalDelete").modal({

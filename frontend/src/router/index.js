@@ -1,7 +1,8 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import NotFound from '../views/NotFound.vue'
 import Home from '../views/Index.vue'
+import Dashboard from '../views/Dashboard.vue'
 import List from "../views/List.vue"
 import Detail from "../views/Detail.vue"
 
@@ -12,12 +13,17 @@ const routes = [
     component: Home,
     children: [
       {
-        path: "list",
+        path: "dashboard",
+        name: "Dashboard",
+        component: Dashboard
+      },
+      {
+        path: "list/:table",
         name: "List",
         component: List
       },
       {
-        path: "detail",
+        path: "detail/:table/:type/:id",
         name: "Detail",
         component: Detail
       }
@@ -40,7 +46,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(process.env.BASE_URL),
+  history: createWebHistory(process.env.BASE_URL),
   routes
 })
 

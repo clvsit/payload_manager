@@ -1,10 +1,7 @@
 <template>
     <div class="left-sidebar">
         <div class="left-header">
-            <h1 class="text-center">
-                <!-- <img style="width: 30px; background-color: #fff;" src="~@/assets/images/brand.png" /> -->
-                PayLoad
-            </h1>
+            <h1 @click="this.$router.replace('/dashboard');" class="text-center">PayLoad</h1>
         </div>
         <div class="left-body">
             <div @click="choose" class="left-nav">
@@ -64,7 +61,7 @@ export default {
 
                 $.ajax({
                     method: "POST",
-                    url: "http://192.168.121.127:6869/config/list",
+                    url: "http://192.168.121.127:6869/api/config/list",
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -102,6 +99,10 @@ export default {
         width: 100%;
         height: 100px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+        h1 {
+            cursor: pointer;
+        }
     }
 
     .left-body {

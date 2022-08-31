@@ -31,12 +31,17 @@ class ConfigManager:
         """
         self.__config_list = self.__read_all_config()
 
-    def get_special_config(self, title: str) -> dict:
-        if title == "账号信息":
+    def get_special_config(self, table: str) -> dict:
+        """
+        根据表单对应的数据表名来查找表单的配置信息
+        :param table: str 数据表名
+        :return dict: 表单的配置信息
+        """
+        if table == "user":
             return self.get_user_config()
 
         for config_item in self.__config_list:
-            if config_item["title"] == title:
+            if config_item["table"] == table:
                 return config_item
 
         return {}
@@ -96,14 +101,14 @@ class ConfigManager:
                     "name": "用户管理",
                     "group": [{
                         "name": "账号信息",
-                        "url": "list?title=账号信息"
+                        "url": "/list/user"
                     }]
                 },
                 {
                     "name": "数据管理",
                     "group": [{
                         "name": item["title"],
-                        "url": "list?title=" + item["title"]
+                        "url": "/list/" + item["table"]
                     } for item in self.__config_list if "title" in item and "table" in item]
                 }
             ]
@@ -112,7 +117,7 @@ class ConfigManager:
                 "name": "数据管理",
                 "group": [{
                     "name": item["title"],
-                    "url": "list?title=" + item["title"]
+                    "url": "/list/" + item["table"]
                 } for item in self.__config_list if "title" in item and "table" in item and item["title"] in auth_list]
             }]
     

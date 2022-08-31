@@ -68,8 +68,8 @@ export default {
                             sessionStorage.setItem("role", resp.data.role);
                             setTimeout(() => {
                                 _this.$refs.popup.close();
-                                _this.$router.push("/");
-                            }, 2000);
+                                _this.$router.push("/dashboard");
+                            }, 1000);
                         } else {
                             _this.$refs.popup.setAll("error", resp.msg);
                         }
