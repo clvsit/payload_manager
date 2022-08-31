@@ -260,11 +260,16 @@ export default {
 
             if (type === "get_config") {
                 $.ajax({
-                    method: "GET",
+                    method: "POST",
                     url: "http://192.168.121.127:6869/api/config/get",
-                    data: {
-                        table: this.param.table
+                    headers: {
+                        "Content-Type": "application/json",
+                        "token": sessionStorage.getItem("token")
                     },
+                    dataType: "JSON",
+                    data: JSON.stringify({
+                        table: this.param.table
+                    }),
                     success(resp) {
                         const detailDict = resp.data.detail;
                         let inputList = [];
@@ -276,23 +281,28 @@ export default {
                                     input: detailDict.data[i].default
                                 });
                             }
-                        }
-                        _this.info = detailDict;
-                        _this.inputList = inputList;
+                            _this.info = detailDict;
+                            _this.inputList = inputList;
 
-                        if (_this.type === "edit") {
-                            _this.request("get_data");
+                            if (_this.param.type === "edit") {
+                                _this.request("get_data");
+                            }
+                        } else {
+                            
                         }
                     }
-                })
+                });
             }
             if (type === "get_data") {
                 $.ajax({
                     method: "GET",
                     url: "http://192.168.121.127:6869/data/get",
+                    headers: {
+                        "token": sessionStorage.getItem("token")
+                    },
                     data: {
                         table: this.info.table,
-                        id: this.id
+                        id: this.param.id
                     },
                     success(resp) {
                         if (resp.code === 1) {
@@ -316,7 +326,8 @@ export default {
                         method: "POST",
                         url: "http://192.168.121.127:6869/data/add",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "token": sessionStorage.getItem("token")
                         },
                         dataType: "JSON",
                         data: JSON.stringify({
@@ -352,12 +363,13 @@ export default {
                         method: "POST",
                         url: "http://192.168.121.127:6869/data/update",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "token": sessionStorage.getItem("token")
                         },
                         dataType: "JSON",
                         data: JSON.stringify({
                             table: this.info.table,
-                            id: this.id,
+                            id: this.param.id,
                             data: this.getInputData()
                         }),
                         success(resp) {
@@ -385,12 +397,13 @@ export default {
                         method: "POST",
                         url: "http://192.168.121.127:6869/data/copy",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "token": sessionStorage.getItem("token")
                         },
                         dataType: "JSON",
                         data: JSON.stringify({
                             table: this.info.table,
-                            id: this.id
+                            id: this.param.id
                         }),
                         success(resp) {
                             if (resp.code === 1) {
@@ -420,12 +433,13 @@ export default {
                         method: "POST",
                         url: "http://192.168.121.127:6869/data/delete",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "token": sessionStorage.getItem("token")
                         },
                         dataType: "JSON",
                         data: JSON.stringify({
                             table: this.info.table,
-                            id: this.id
+                            id: this.param.id
                         }),
                         success(resp) {
                             if (resp.code === 1) {

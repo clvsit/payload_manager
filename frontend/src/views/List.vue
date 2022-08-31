@@ -165,11 +165,16 @@ export default {
 
             if (type === "get_config") {
                 $.ajax({
-                    method: "GET",
+                    method: "POST",
                     url: "http://192.168.121.127:6869/api/config/get",
-                    data: {
-                        table: this.info.table
+                    headers: {
+                        "Content-Type": "application/json",
+                        "token": sessionStorage.getItem("token")
                     },
+                    dataType: "JSON",
+                    data: JSON.stringify({
+                        table: this.info.table
+                    }),
                     success(resp) {
                         const detailDict = resp.data.detail;
 
@@ -188,6 +193,9 @@ export default {
                     $.ajax({
                         method: "GET",
                         url: "http://192.168.121.127:6869/data/list",
+                        headers: {
+                            "token": sessionStorage.getItem("token")
+                        },
                         data: {
                             table: this.info.table,
                             query: JSON.stringify(this.input.search),
@@ -215,7 +223,8 @@ export default {
                         method: "POST",
                         url: "http://192.168.121.127:6869/data/delete",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            "token": sessionStorage.getItem("token")
                         },
                         dataType: "JSON",
                         data: JSON.stringify({

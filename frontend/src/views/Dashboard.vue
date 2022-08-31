@@ -55,12 +55,11 @@ export default {
                     method: "POST",
                     url: "http://192.168.121.127:6869/api/config/list",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "token": sessionStorage.getItem("token")
                     },
                     dataType: "JSON",
-                    data: JSON.stringify({
-                        token: token
-                    }),
+                    data: JSON.stringify({}),
                     success(resp) {
                         if (resp.code === 1) {
                             _this.collectionList = resp.data.list;

@@ -36,16 +36,21 @@
                 </router-view>
             </div>
         </div>
+
+        <message-popup ref="popup"></message-popup>
+
     </div>
 </template>
 
 <script>
 import LeftSidebarComp from "@/components/container_comp/LeftSidebarComp.vue"
+import MessagePopup from "../components/MessagePopup.vue";
 
 export default {
     name: 'Home',
     components: {
-        LeftSidebarComp
+        LeftSidebarComp,
+        MessagePopup
     },
     data() {
         return {
@@ -57,6 +62,7 @@ export default {
 
         this.$nextTick(() => {
             _this.setHeight();
+            _this.request("check_login");
         });
 
         window.onresize = () => {
@@ -90,6 +96,35 @@ export default {
                     _this.$router.replace("/login");
                 }
             })
+        },
+        request(type) {
+            let _this = this;
+
+            if (type === "check_login") {
+                $.ajax({
+                    method: "POST",
+                    url: "http://192.168.121.127:6869/api/user/check",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "token": sessionStorage.getItem("token")
+                    },
+                    dataType: "JSON",
+                    data: JSON.stringify({
+                        token: sessionStorage.getItem("token")
+                    }),
+                    success(resp) {
+                        if (resp.code === 1) {
+
+                        } else {
+                            _this.$refs.popup.open("error", "用户未登录，或登录状态过期，请重新登录哦！");
+                            setTimeout(() => {
+                                _this.$refs.popup.close();
+                                _this.$router.replace("/login");
+                            }, 2000);
+                        }
+                    }
+                });
+            }
         }
     },
 }

@@ -83,13 +83,27 @@ def logout():
         return {"code": 0, "msg": "注销失败！", "data": {}}
 
 
+@app.route("/api/user/check", methods=["POST"])
+def check_user():
+    if request.method != "POST":
+        return {"code": 0, "msg": "请求的方法有误！", "data": {}}
+    
+    request_json = request.json
+    check_resp = user_manager.check_login(request_json.get("token"))
+    
+    if check_resp["code"] == 0:
+        return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+    else:
+        return {"code": 1, "msg": check_resp["msg"]}
+
+
 @app.route("/api/config/list", methods=["POST"])
 def get_config_list():
     if request.method != "POST":
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
     
     request_json = request.json
-    check_resp = user_manager.check_login(request_json.get("token"))
+    check_resp = user_manager.check_login(request.headers.get("token"))
     
     if check_resp["code"] == 0:
         return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
@@ -100,14 +114,19 @@ def get_config_list():
     return {"code": 1, "msg": "获取配置文件内容成功！", "data": {"list": config_manager.get_all_config_title(role, auth)}}
 
 
-@app.route("/api/config/get", methods=["GET"])
+@app.route("/api/config/get", methods=["POST"])
 def get_special_config():
-    if request.method != "GET":
+    if request.method != "POST":
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
-    table = request.args.get("table")
+    request_json = request.json
+    check_resp = user_manager.check_login(request.headers.get("token"))
+    table = request_json.get("table")
+    
+    if check_resp["code"] == 0:
+        return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+
     config_dict = config_manager.get_special_config(table=table)
-    print(config_dict)
     return {"code": 1, "msg": "获取配置文件内容成功！", "data": {"detail": config_dict}}
 
 
@@ -117,6 +136,11 @@ def get_data_list():
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
     try:
+        check_resp = user_manager.check_login(request.headers.get("token"))
+    
+        if check_resp["code"] == 0:
+            return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+
         table = request.args.get("table")
         query_param = request.args.get("query", {})
         offset = int(request.args.get("offset", 0))
@@ -134,23 +158,15 @@ def get_data():
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
     try:
+        check_resp = user_manager.check_login(request.headers.get("token"))
+    
+        if check_resp["code"] == 0:
+            return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+
         table = request.args.get("table")
         data_id = request.args.get("id")
         resp = data_manager.get_data(table, data_id)
         return {"code": 1, "msg": "获取数据详情成功！", "data": resp}
-    except Exception as error:
-        logger.error(f"Failed to get_data! reason: {error}")
-        return {"code": 0, "msg": "获取数据详情失败！", "data": {"detail": {}}}
-
-
-@app.route("/api/<table>/<id>", methods=["GET"])
-def api_get_data(table, id):
-    if request.method != "GET":
-        return {"code": 0, "msg": "请求的方法有误！", "data": {}}
-
-    try:
-        resp = data_manager.get_data(table, id)
-        return {"code": 1, "msg": "获取数据详情成功！", "data": resp["detail"]}
     except Exception as error:
         logger.error(f"Failed to get_data! reason: {error}")
         return {"code": 0, "msg": "获取数据详情失败！", "data": {"detail": {}}}
@@ -162,6 +178,11 @@ def add_data():
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
     try:
+        check_resp = user_manager.check_login(request.headers.get("token"))
+    
+        if check_resp["code"] == 0:
+            return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+
         request_json = request.json
         table = request_json["table"]
         data = request_json.get("data", {})
@@ -182,6 +203,11 @@ def update_data():
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
     try:
+        check_resp = user_manager.check_login(request.headers.get("token"))
+    
+        if check_resp["code"] == 0:
+            return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+
         request_json = request.json
         table = request_json["table"]
         data_id = request_json["id"]
@@ -200,6 +226,11 @@ def copy_data():
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
     try:
+        check_resp = user_manager.check_login(request.headers.get("token"))
+    
+        if check_resp["code"] == 0:
+            return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+
         request_json = request.json
         table = request_json["table"]
         data_id = request_json["id"]
@@ -220,6 +251,11 @@ def delete_data():
         return {"code": 0, "msg": "请求的方法有误！", "data": {}}
 
     try:
+        check_resp = user_manager.check_login(request.headers.get("token"))
+    
+        if check_resp["code"] == 0:
+            return {"code": 0, "msg": check_resp["msg"], "data": check_resp["data"]}
+
         request_json = request.json
         table = request_json["table"]
         data_id = request_json["id"]
@@ -229,6 +265,24 @@ def delete_data():
     except Exception as error:
         logger.error(f"Failed to delete_data! reason: {error}")
         return {"code": 0, "msg": "删除数据失败！", "data": {}}
+
+
+"""
+对外接口
+"""
+
+
+@app.route("/api/<table>/<id>", methods=["GET"])
+def api_get_data(table, id):
+    if request.method != "GET":
+        return {"code": 0, "msg": "请求的方法有误！", "data": {}}
+
+    try:
+        resp = data_manager.get_data(table, id)
+        return {"code": 1, "msg": "获取数据详情成功！", "data": resp["detail"]}
+    except Exception as error:
+        logger.error(f"Failed to get_data! reason: {error}")
+        return {"code": 0, "msg": "获取数据详情失败！", "data": {"detail": {}}}
 
 
 
