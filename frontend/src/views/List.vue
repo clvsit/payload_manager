@@ -129,6 +129,16 @@ export default {
         selectDataTitleKey(dataList) {
             const showTitle = this.info.show.param;
 
+            if (showTitle === "total") {
+                this.table.titleConf = [
+                    { name: "ID", width: "30%" },
+                    { name: "修改时间", width: "15%" },
+                    { name: "全文", width: "55%" }
+                ];
+                this.show.param = "total";
+                return;
+            }
+
             for (let i = 0, len = dataList.length; i < len; i++) {
                 if (dataList[i].key === showTitle) {
                     const copyTitleConf = [
@@ -150,12 +160,23 @@ export default {
             let tableDataList = [];
 
             for (let i = 0; i < dataList.length; i++) {
-                let data = dataList[i];
+                let data = dataList[i],
+                    showData = {};
+
+                if (this.show.param === "total") {
+                    showData = {
+                        name: "total",
+                        value: Object.values(data.data).filter((a) => {if (a) {return a}}).join("/"),
+                        hidden: false
+                    }
+                } else {
+                    showData = { name: this.show.param.key, value: data.data[this.show.param.key], hidden: false }
+                }
 
                 tableDataList.push([
                     { name: "id", value: data.id, hidden: false },
                     { name: "date", value: data.date.modify, hidden: false },
-                    { name: this.show.param.key, value: data.data[this.show.param.key], hidden: false }
+                    showData
                 ])
             }
             return tableDataList;

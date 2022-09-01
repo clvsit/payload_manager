@@ -1,4 +1,5 @@
 import os
+import copy
 import json
 from tokenize import group
 from typing import List
@@ -42,14 +43,53 @@ class ConfigManager:
 
         for config_item in self.__config_list:
             if config_item["table"] == table:
+                self.__make_config_format_(config_item)
                 return config_item
 
         return {}
+
+    @staticmethod
+    def __make_config_format_(config_dict: dict) -> None:
+        config_type = config_dict.get("type", "v1")
+
+        if config_type == "v1":
+            format_data_list = []
+
+            for item in config_dict.get("data", []):
+                copy_item = copy.deepcopy(item)
+                copy_item["input"] = copy_item.get("default", "")
+                copy_item["isCond"] = True
+
+                try:
+                    del copy_item["default"]
+                except Exception as error:
+                    pass
+
+                format_data_list.append(copy_item)
+            
+            config_dict["data"] = format_data_list
+        elif config_type == "v2":
+            for group_item in config_dict.get("data", []):
+                format_data_list = []
+
+                for item in group_item.get("data", []):
+                    copy_item = copy.deepcopy(item)
+                    copy_item["input"] = copy_item.get("default", "")
+                    copy_item["isCond"] = True
+
+                    try:
+                        del copy_item["default"]
+                    except Exception as error:
+                        pass
+
+                    format_data_list.append(copy_item)
+                    group_item["data"] = format_data_list
     
     def get_user_config(self) -> dict:
         return {
             "title": "账号信息",
             "table": "user",
+            "type": "v1",
             "show": {
                 "param": "name"
             },

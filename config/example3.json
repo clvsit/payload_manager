@@ -1,31 +1,59 @@
 {
-    "title": "测试用例2",
-    "table": "test2",
+    "title": "商品信息",
+    "table": "goods_info",
+    "type": "v1",
     "show": {
-        "param": "name"
+        "param": "total"
     },
     "data": [
         {
-            "name": "姓名",
+            "name": "名称",
             "type": "text",
-            "key": "name",
-            "default": "clvsit"
+            "key": "名称"
         },
         {
-            "name": "年龄",
-            "type": "number",
-            "key": "age",
-            "default": "27"
+            "name": "总价格",
+            "type": "text",
+            "key": "总价格",
+            "prompt": "单位是“元”，不用写单位，也可以写成“单价*数量 ”的格式，如“79*3”，表示 SKU 单价 79 元，数量为 3 个"
         },
         {
-            "name": "省份",
+            "name": "总容量",
+            "type": "text",
+            "key": "总容量",
+            "prompt": "必须写单位, 如 “4ml*7”, 表示 SKU 容量是 4 ml, 数量为 7 个"
+        },
+        {
+            "name": "SKU 类型",
             "type": "select",
-            "key": "province",
-            "default": "zhejiang",
+            "key": "SKU类型",
             "optionList": [
-                { "key": "浙江", "value": "zhejiang" },
-                { "key": "江苏", "value": "jiangshu" }
+                { "text": "无", "value": "" },
+                { "text": "商品：表示本 SKU 是正装商品", "value": "商品" },
+                { "text": "套装：表示本 SKU 是多个不同的子 SKU 组成的套装", "value": "套装" },
+                { "text": "小样：赠品或积分兑换品可用，表示赠品或积分兑换品是试用装等非卖品版本", "value": "小样" },
+                { "text": "优惠券：赠品或积分兑换品可用, 表示赠品或积分兑换品是优惠券", "value": "优惠券" }
             ]
+        },
+        {
+            "name": "SKU 品类",
+            "type": "select",
+            "key": "SKU品类",
+            "optionList": [
+                { "text": "无", "value": "" },
+                { "text": "化妆品", "value": "化妆品" },
+                { "text": "零食", "value": "零食" },
+                { "text": "卫衣", "value": "卫衣" },
+                { "text": "牛仔裤", "value": "牛仔裤" },
+                { "text": "N/A", "value": "N/A" }
+            ]
+        },
+        {
+            "name": "套装件数",
+            "type": "number",
+            "key": "套装件数",
+            "condition": "inputList[3].input==='套装'",
+            "prompt": "单位是“元”，不用写单位"
         }
     ]
 }
