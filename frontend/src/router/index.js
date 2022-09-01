@@ -5,6 +5,7 @@ import Home from '../views/Index.vue'
 import Dashboard from '../views/Dashboard.vue'
 import List from "../views/List.vue"
 import Detail from "../views/Detail.vue"
+import TemplateView from "../views/business/template.vue"
 
 const routes = [
   {
@@ -23,10 +24,15 @@ const routes = [
         component: List
       },
       {
-        path: "detail/:table/:type/:id",
-        name: "Detail",
-        component: Detail
+        path: "detail/template/:type/:id",
+        name: "Template",
+        component: TemplateView
       }
+      // {
+      //   path: "detail/:table/:type/:id",
+      //   name: "Detail",
+      //   component: Detail
+      // }
     ]
   },
   {

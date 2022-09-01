@@ -8,33 +8,43 @@
 
         <div class="payload-detail-body">
 
-            <div id="inputArea" class="row mt-20">
-                <div class="col-md-8 input-area">
-                    <form class="form">
-
+            <div id="inputRow" class="row mt-20">
+                <div id="inputArea" class="col-md-8 input-area">
+                    <form @change="listen" class="form" v-if="configType === 'v1'">
                         <div class="form-group" v-for="(item, idx) in inputList" :key="idx">
-                            <div v-if="item.type === 'text'">
+                            <div v-if="item.type === 'text' && item.isCond">
                                 <label class="control-label">
                                     <span v-if="item.required" class="color-red">★</span>
                                     <span v-text="item.name"></span>
                                 </label>
                                 <input v-model="item.input" type="text" class="form-control" />
+                                <p class="help-block" v-text="item.prompt"></p>
                             </div>
-                            <div v-else-if="item.type === 'password'">
+                            <div v-else-if="item.type === 'password' && item.isCond">
                                 <label class="control-label">
                                     <span v-if="item.required" class="color-red">★</span>
                                     <span v-text="item.name"></span>
                                 </label>
                                 <input v-model="item.input" type="password" class="form-control" />
+                                <p class="help-block" v-text="item.prompt"></p>
                             </div>
-                            <div v-else-if="item.type === 'number'">
+                            <div v-else-if="item.type === 'number' && item.isCond">
                                 <label class="control-label">
                                     <span v-if="item.required" class="color-red">★</span>
                                     <span v-text="item.name"></span>
                                 </label>
                                 <input v-model="item.input" type="number" class="form-control" />
+                                <p class="help-block" v-text="item.prompt"></p>
                             </div>
-                            <div v-else-if="item.type === 'select'">
+                            <div v-else-if="item.type === 'date' && item.isCond">
+                                <label class="control-label">
+                                    <span v-if="item.required" class="color-red">★</span>
+                                    <span v-text="item.name"></span>
+                                </label>
+                                <input v-model="item.input" type="datetime-local" class="form-control" />
+                                <p class="help-block" v-text="item.prompt"></p>
+                            </div>
+                            <div v-else-if="item.type === 'select' && item.isCond">
                                 <label class="control-label">
                                     <span v-if="item.required" class="color-red">★</span>
                                     <span v-text="item.name"></span>
@@ -44,7 +54,7 @@
                                         :key="optionItem.text" v-text="optionItem.text"></option>
                                 </select>
                             </div>
-                            <div v-else-if="item.type === 'multiSelect'">
+                            <div v-else-if="item.type === 'multiSelect' && item.isCond">
                                 <label class="control-label">
                                     <span v-if="item.required" class="color-red">★</span>
                                     <span v-text="item.name"></span>
@@ -58,16 +68,98 @@
                                     </div>
                                 </div>
                             </div>
+                            <div v-else-if="item.type === 'table' && item.isCond">
+                                <label class="control-label">
+                                    <span v-if="item.required" class="color-red">★</span>
+                                    <span v-text="item.name"></span>
+                                </label>
+                                <input v-model="item.input" type="datetime-local" class="form-control" />
+                                <p class="help-block" v-text="item.prompt"></p>
+                            </div>
+                        </div>
+                    </form>
+                    <form class="form" v-else-if="configType === 'v2'">
+                        <div class="input-group-custom" v-for="(groupItem, idx) in inputList" :key="idx">
+                            <h4 class="input-title" v-text="groupItem.name"></h4>
+                            <div class="form-group" v-for="(item, idx) in groupItem.data" :key="idx">
+                                <div v-if="item.type === 'text' && item.isCond">
+                                    <label class="control-label">
+                                        <span v-if="item.required" class="color-red">★</span>
+                                        <span v-text="item.name"></span>
+                                    </label>
+                                    <input v-model="item.input" type="text" class="form-control" />
+                                </div>
+                                <div v-else-if="item.type === 'password' && item.isCond">
+                                    <label class="control-label">
+                                        <span v-if="item.required" class="color-red">★</span>
+                                        <span v-text="item.name"></span>
+                                    </label>
+                                    <input v-model="item.input" type="password" class="form-control" />
+                                </div>
+                                <div v-else-if="item.type === 'number' && item.isCond">
+                                    <label class="control-label">
+                                        <span v-if="item.required" class="color-red">★</span>
+                                        <span v-text="item.name"></span>
+                                    </label>
+                                    <input v-model="item.input" type="number" class="form-control" />
+                                </div>
+                                <div v-else-if="item.type === 'date' && item.isCond">
+                                    <label class="control-label">
+                                        <span v-if="item.required" class="color-red">★</span>
+                                        <span v-text="item.name"></span>
+                                    </label>
+                                    <input v-model="item.input" type="datetime-local" class="form-control" />
+                                </div>
+                                <div v-else-if="item.type === 'select' && item.isCond">
+                                    <label class="control-label">
+                                        <span v-if="item.required" class="color-red">★</span>
+                                        <span v-text="item.name"></span>
+                                    </label>
+                                    <select v-model="item.input" class="form-control">
+                                        <option :value="optionItem.value" v-for="optionItem in item.optionList"
+                                            :key="optionItem.text" v-text="optionItem.text"></option>
+                                    </select>
+                                </div>
+                                <div v-else-if="item.type === 'multiSelect' && item.isCond">
+                                    <label class="control-label">
+                                        <span v-if="item.required" class="color-red">★</span>
+                                        <span v-text="item.name"></span>
+                                    </label>
+                                    <div class="pl-10">
+                                        <div class="checkbox" v-for="optionItem in item.optionList"
+                                            :key="optionItem.text">
+                                            <label>
+                                                <input v-model="item.input" type="checkbox" :value="optionItem.value">
+                                                <span v-text="optionItem.text"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else-if="item.type === 'table' && item.isCond">
+                                    <label class="control-label">
+                                        <span v-if="item.required" class="color-red">★</span>
+                                        <span v-text="item.name"></span>
+                                    </label>
+                                    <div class="table-op-area">
+                                        <div class="btn btn-default">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                        </div>
+                                    </div>
+                                    <p class="help-block" v-text="item.prompt"></p>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="col-md-4 info-area">
                     <div class="btn-group info-op-area">
-                        <div v-if="param.type === 'add'" @click="request('add_data'); this.other.addStatus = 0;" class="btn btn-default">
+                        <div v-if="param.type === 'add'" @click="request('add_data'); this.other.addStatus = 0;"
+                            class="btn btn-default">
                             <i class="glyphicon glyphicon-plus"></i>
                             添加后返回
                         </div>
-                        <div v-if="param.type === 'add'" @click="request('add_data'); this.other.addStatus = 1;" class="btn btn-default">
+                        <div v-if="param.type === 'add'" @click="request('add_data'); this.other.addStatus = 1;"
+                            class="btn btn-default">
                             <i class="glyphicon glyphicon-plus"></i>
                             添加后前往
                         </div>
@@ -187,6 +279,7 @@ export default {
             data: {
                 date: {}
             },
+            configType: "",
             inputList: [],
             param: {
                 table: "",
@@ -227,19 +320,45 @@ export default {
         }
     },
     methods: {
+        listen() {
+            console.log(this.inputList);
+
+            if (this.configType === "v1") {
+                for (let i = 0, len = this.inputList.length; i < len; i++) {
+                    const inputItem = this.inputList[i];
+
+                    if (inputItem.condition) {
+                        console.log(inputItem.condition);
+                        if (eval("this." + inputItem.condition)) {
+                            inputItem.isCond = true;
+                        } else {
+                            inputItem.isCond = false;
+                        }
+                    } else {
+                        inputItem.isCond = true;
+                    }
+                }
+            }
+            
+        },
         setHeight() {
             let height = document.documentElement.clientHeight;
             document.getElementById("app").style.height = (height - 1) + "px";
+            $("#inputRow").height(height - 191);
             $("#inputArea").height(height - 191);
         },
         clear() {
             for (let i = 0, len = this.inputList.length; i < len; i++) {
-                const inputItem = this.inputList[i];
+                const groupItem = this.inputList[i];
 
-                if (inputItem.type === "multiSelect") {
-                    inputItem.input = [];
-                } else {
-                    inputItem.input = "";
+                for (let j = 0, jLen = groupItem.data.length; j < jLen; j++) {
+                    const inputItem = groupItem.data[j];
+
+                    if (inputItem.type === "multiSelect") {
+                        inputItem.input = [];
+                    } else {
+                        inputItem.input = "";
+                    }
                 }
             }
         },
@@ -272,23 +391,18 @@ export default {
                     }),
                     success(resp) {
                         const detailDict = resp.data.detail;
-                        let inputList = [];
 
                         if (resp.code === 1) {
-                            for (let i = 0, len = detailDict.data.length; i < len; i++) {
-                                inputList.push({
-                                    ...detailDict.data[i],
-                                    input: detailDict.data[i].default
-                                });
-                            }
+                            _this.configType = detailDict.type;
                             _this.info = detailDict;
-                            _this.inputList = inputList;
+                            _this.inputList = detailDict.data;
+                            _this.listen();
 
                             if (_this.param.type === "edit") {
                                 _this.request("get_data");
                             }
                         } else {
-                            
+
                         }
                     }
                 });
@@ -499,6 +613,42 @@ export default {
         .input-area {
             height: 100%;
             border-right: 1px solid rgba(0, 0, 0, 0.1);
+            overflow: auto;
+
+            .input-group-custom {
+
+                .input-title {
+                    height: 40px;
+                    line-height: 40px;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                }
+
+                .table-op-area {
+                    width: 100%;
+                    margin-top: 10px;
+                    text-align: center;
+
+                    i {
+                        width: 100px;
+                    }
+                }
+            }
+        }
+
+        .input-area::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .input-area::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .input-area::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            border-radius: 0;
+            background: rgba(0, 0, 0, 0.1);
         }
 
         .info-area {

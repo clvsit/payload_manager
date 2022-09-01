@@ -10,6 +10,10 @@
                         <div v-text="nav.name"></div>
                     </div>
                     <ul class="left-nav-group-list">
+                        <!-- 特制：话术模板 -->
+                        <li class="left-nav-group-item" data-url="/list/template">
+                            <span>话术模板</span>
+                        </li>
                         <li class="left-nav-group-item" v-for="(item, idx) in nav.group" :key="idx" :data-url="item.url">
                             <span v-text="item.name"></span>
                         </li>

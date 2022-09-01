@@ -1,30 +1,365 @@
 {
     "title": "测试用例",
     "table": "test",
+    "type": "v2",
     "show": {
         "param": "name"
     },
     "data": [
         {
-            "name": "姓名",
-            "type": "text",
-            "key": "name",
-            "default": "clvsit"
+            "name": "客户",
+            "data": [
+                {
+                    "name": "购买时间",
+                    "type": "select",
+                    "key": "购买时间",
+                    "default": "无",
+                    "optionList": [
+                        {"text": "一周内", "value": "一周内"},
+                        {"text": "一个月内", "value": "一个月内"},
+                        {"text": "三个月内", "value": "三个月内"},
+                        {"text": "一年前", "value": "一年前"},
+                        {"text": "无", "value": "无"}
+                    ]
+                },
+                {
+                    "name": "购买商品",
+                    "type": "text",
+                    "key": "购买商品"
+                },
+                {
+                    "name": "客户类型",
+                    "type": "select",
+                    "key": "客户类型",
+                    "default": "无",
+                    "optionList": [
+                        {"text": "老会员", "value": "老会员"},
+                        {"text": "新会员", "value": "新会员"},
+                        {"text": "无", "value": "无"}
+                    ]
+                }
+            ]
         },
         {
-            "name": "年龄",
-            "type": "number",
-            "key": "age",
-            "default": "27"
+            "name": "品牌",
+            "data": [
+                {
+                    "name": "名称",
+                    "type": "text",
+                    "key": "名称",
+                    "required": true
+                },
+                {
+                    "name": "国家",
+                    "type": "text",
+                    "key": "国家",
+                    "required": true
+                }
+            ]
         },
         {
-            "name": "省份",
-            "type": "select",
-            "key": "province",
-            "default": "zhejiang",
-            "optionList": [
-                { "text": "浙江", "value": "zhejiang" },
-                { "text": "江苏", "value": "jiangshu" }
+            "name": "店铺",
+            "data": [
+                {
+                    "name": "名称",
+                    "type": "text",
+                    "key": "名称",
+                    "required": true
+                },
+                {
+                    "name": "平台",
+                    "type": "multiSelect",
+                    "key": "平台",
+                    "default": [],
+                    "optionList": [
+                        {"text": "天猫", "value": "天猫"},
+                        {"text": "淘宝", "value": "淘宝"},
+                        {"text": "京东", "value": "京东"},
+                        {"text": "拼多多", "value": "拼多多"}
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "链接",
+            "data": [
+                {
+                    "name": "类型",
+                    "type": "select",
+                    "key": "类型",
+                    "required": true,
+                    "optionList": [
+                        { "text": "店铺", "value": "店铺" },
+                        { "text": "品牌", "value": "品牌" },
+                        { "text": "活动", "value": "活动" },
+                        { "text": "优惠券", "value": "优惠券" },
+                        { "text": "商品", "value": "商品" }
+                    ]
+                },
+                {
+                    "name": "URL",
+                    "type": "text",
+                    "key": "URL",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "name": "小程序",
+            "data": [
+                {
+                    "name": "类型",
+                    "type": "select",
+                    "key": "类型",
+                    "required": true,
+                    "optionList": [
+                        { "text": "店铺", "value": "店铺" },
+                        { "text": "品牌", "value": "品牌" },
+                        { "text": "活动", "value": "活动" },
+                        { "text": "优惠券", "value": "优惠券" },
+                        { "text": "商品", "value": "商品" }
+                    ]
+                },
+                {
+                    "name": "关键词",
+                    "type": "text",
+                    "key": "关键词",
+                    "required": true
+                },
+                {
+                    "name": "URL",
+                    "type": "text",
+                    "key": "URL",
+                    "required": true
+                }
+            ]
+        },
+        {
+            "name": "活动",
+            "data": [
+                {
+                    "name": "名称",
+                    "type": "text",
+                    "key": "名称",
+                    "required": true
+                },
+                {
+                    "name": "简称",
+                    "type": "text",
+                    "key": "简称"
+                },
+                {
+                    "name": "开始日期",
+                    "type": "date",
+                    "key": "开始日期"
+                },
+                {
+                    "name": "截止日期",
+                    "type": "date",
+                    "key": "截止日期"
+                }
+            ]
+        },
+        {
+            "name": "回购礼",
+            "data": [
+                {
+                    "name": "商品信息",
+                    "type": "table",
+                    "key": "商品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "赠品信息",
+                    "type": "table",
+                    "key": "赠品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "开始日期",
+                    "type": "date",
+                    "key": "开始日期"
+                },
+                {
+                    "name": "截止日期",
+                    "type": "date",
+                    "key": "截止日期"
+                },
+                {
+                    "name": "备注信息",
+                    "type": "text",
+                    "key": "备注信息"
+                }
+            ]
+        },
+        {
+            "name": "买赠",
+            "data": [
+                {
+                    "name": "商品信息",
+                    "type": "table",
+                    "key": "商品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "赠品信息",
+                    "type": "table",
+                    "key": "赠品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "优先级",
+                    "type": "select",
+                    "key": "优先级",
+                    "default": "高",
+                    "optionList": [
+                        {"text": "高", "value": "高"},
+                        {"text": "低", "value": "低"}
+                    ]
+                },
+                {
+                    "name": "开始日期",
+                    "type": "date",
+                    "key": "开始日期"
+                },
+                {
+                    "name": "截止日期",
+                    "type": "date",
+                    "key": "截止日期"
+                },
+                {
+                    "name": "备注信息",
+                    "type": "text",
+                    "key": "备注信息"
+                }
+            ]
+        },
+        {
+            "name": "积分礼",
+            "data": [
+                {
+                    "name": "商品信息",
+                    "type": "table",
+                    "key": "商品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "积分赔率",
+                    "type": "number",
+                    "key": "积分赔率"
+                },
+                {
+                    "name": "兑换品信息",
+                    "type": "table",
+                    "key": "兑换品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "优先级",
+                    "type": "select",
+                    "key": "优先级",
+                    "default": "高",
+                    "optionList": [
+                        {"text": "高", "value": "高"},
+                        {"text": "低", "value": "低"}
+                    ]
+                },
+                {
+                    "name": "开始日期",
+                    "type": "date",
+                    "key": "开始日期"
+                },
+                {
+                    "name": "截止日期",
+                    "type": "date",
+                    "key": "截止日期"
+                },
+                {
+                    "name": "备注信息",
+                    "type": "text",
+                    "key": "备注信息"
+                }
+            ]
+        },
+        {
+            "name": "满赠",
+            "data": [
+                {
+                    "name": "门槛金额",
+                    "type": "number",
+                    "key": "门槛金额"
+                },
+                {
+                    "name": "赠品信息",
+                    "type": "table",
+                    "key": "赠品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "开始日期",
+                    "type": "date",
+                    "key": "开始日期"
+                },
+                {
+                    "name": "截止日期",
+                    "type": "date",
+                    "key": "截止日期"
+                },
+                {
+                    "name": "备注信息",
+                    "type": "text",
+                    "key": "备注信息"
+                }
+            ]
+        },
+        {
+            "name": "购后抽奖",
+            "data": [
+                {
+                    "name": "商品信息",
+                    "type": "table",
+                    "key": "商品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "奖项",
+                    "type": "table",
+                    "key": "赠品信息",
+                    "param": {
+                        "table": "goods_info"
+                    }
+                },
+                {
+                    "name": "开始日期",
+                    "type": "date",
+                    "key": "开始日期"
+                },
+                {
+                    "name": "截止日期",
+                    "type": "date",
+                    "key": "截止日期"
+                },
+                {
+                    "name": "备注信息",
+                    "type": "text",
+                    "key": "备注信息"
+                }
             ]
         }
     ]
