@@ -8,8 +8,7 @@
         <div class="payload-list-body">
             <input-comp v-on:search="search" :inputList="inputList"></input-comp>
             <div class="data-area">
-                <table-comp v-if="data.status !== 0" v-on:handle="tableHandle" :table="table" ref="tableComp">
-                </table-comp>
+                <table-comp v-if="data.status !== 0" v-on:handle="tableHandle" :table="table" ref="tableComp"></table-comp>
                 <loading-comp v-else></loading-comp>
             </div>
         </div>
@@ -67,8 +66,10 @@ export default {
             },
             table: {
                 titleConf: [
-                    { name: "ID", width: "30%" },
+                    { name: "模板数据名称", width: "50%" },
                     { name: "修改时间", width: "15%" },
+                    { name: "所属用户", width: "25%" },
+                    { name: "数据状态", width: "10%" },
                 ],
                 isOp: true,
                 opConf: {
@@ -83,7 +84,7 @@ export default {
             show: { param: {} },
             inputList: [
                 {
-                    "title": "ID",
+                    "title": "模板数据名称",
                     "type": "text",
                     "placeholder": "",
                     "name": "id"
@@ -92,6 +93,11 @@ export default {
                     "title": "修改日期",
                     "type": "dateRange",
                     "name": "date"
+                },
+                {
+                    "title": "所属用户",
+                    "type": "text",
+                    "name": "user.create"
                 }
             ],
             input: {
@@ -126,6 +132,7 @@ export default {
             document.getElementById("app").style.height = (height - 1) + "px";
             $(".data-area").height(height - 271);
         },
+<<<<<<< HEAD
         selectDataTitleKey(dataList) {
             const showTitle = this.info.show.param;
 
@@ -156,6 +163,8 @@ export default {
                 }
             }
         },
+=======
+>>>>>>> business
         setTableData(dataList) {
             let tableDataList = [];
 
@@ -174,9 +183,14 @@ export default {
                 }
 
                 tableDataList.push([
-                    { name: "id", value: data.id, hidden: false },
+                    { name: "name", value: data.data.标题, hidden: false },
                     { name: "date", value: data.date.modify, hidden: false },
+<<<<<<< HEAD
                     showData
+=======
+                    { name: "user", value: data.user.create, hidden: false },
+                    { name: "status", value: "未发布", hidden: false },
+>>>>>>> business
                 ])
             }
             return tableDataList;
@@ -201,7 +215,6 @@ export default {
 
                         if (resp.code === 1) {
                             _this.info = detailDict;
-                            _this.selectDataTitleKey(detailDict.data);
                             _this.request("get_data_list");
                         }
 

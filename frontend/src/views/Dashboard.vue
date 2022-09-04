@@ -34,39 +34,45 @@ export default {
     name: "Dashboard",
     data() {
         return {
-            collectionList: []
+            collectionList: [{
+                name: "数据管理",
+                group: [{
+                    name: "话术模板",
+                    url: "/list/template"
+                }]
+            }]
         }
     },
     created() {
         let _this = this;
 
-        this.$nextTick(() => {
-            _this.request("get_config_list");
-        });
+        // this.$nextTick(() => {
+        //     _this.request("get_config_list");
+        // });
     },
     methods: {
         request(type) {
             let _this = this;
 
-            if (type === "get_config_list") {
-                const token = sessionStorage.getItem("token");
+            // if (type === "get_config_list") {
+            //     const token = sessionStorage.getItem("token");
 
-                $.ajax({
-                    method: "POST",
-                    url: "http://192.168.121.127:6869/api/config/list",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "token": sessionStorage.getItem("token")
-                    },
-                    dataType: "JSON",
-                    data: JSON.stringify({}),
-                    success(resp) {
-                        if (resp.code === 1) {
-                            _this.collectionList = resp.data.list;
-                        }
-                    }
-                })
-            }
+            //     $.ajax({
+            //         method: "POST",
+            //         url: "http://192.168.121.127:6869/api/config/list",
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //             "token": sessionStorage.getItem("token")
+            //         },
+            //         dataType: "JSON",
+            //         data: JSON.stringify({}),
+            //         success(resp) {
+            //             if (resp.code === 1) {
+            //                 _this.collectionList = resp.data.list;
+            //             }
+            //         }
+            //     })
+            // }
         }
     }
 }

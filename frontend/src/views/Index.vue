@@ -69,6 +69,11 @@ export default {
             _this.setHeight();
         }
     },
+    watch: {
+        $route() {
+            this.request("check_login");
+        }
+    },
     methods: {
         setHeight() {
             let height = document.documentElement.clientHeight;
