@@ -186,7 +186,8 @@ def add_data():
         request_json = request.json
         table = request_json["table"]
         data = request_json.get("data", {})
-        resp = data_manager.add_data(table, data)
+        config_info = request_json.get("config", {})
+        resp = data_manager.add_data(table, data, config_info, check_resp["data"].get("user", {}))
 
         if resp["code"] != 1:
             return {"code": 0, "msg": "添加数据失败！", "data": {}}
@@ -212,7 +213,8 @@ def update_data():
         table = request_json["table"]
         data_id = request_json["id"]
         data = request_json.get("data", {})
-        is_update = data_manager.update_data(table, data_id, data)
+        config_info = request_json.get("config", {})
+        is_update = data_manager.update_data(table, data_id, data, config_info, check_resp["data"].get("user", {}))
 
         return {"code": 1, "msg": "修改数据成功！", "data": {}} if is_update else {"code": 0, "msg": "修改数据失败！", "data": {}}
     except Exception as error:

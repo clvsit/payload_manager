@@ -12,6 +12,10 @@
   // background-color: #f5f7fb;
 }
 
+.mt-10 {
+  margin-top: 10px !important;
+}
+
 .mt-20 {
   margin-top: 20px !important;
 }
@@ -26,6 +30,10 @@
 
 .mr-20 {
   margin-right: 20px !important;
+}
+
+.pt-10 {
+  padding-top: 10px !important;
 }
 
 .pl-10 {

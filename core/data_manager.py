@@ -39,7 +39,15 @@ class DataManager:
             logger.error(f"Failed to get data_list! reason: {error}.")
             return {}
 
-    def add_data(self, table: str, data: dict) -> dict:
+    def add_data(self, table: str, data: dict, config_dict: dict, user: dict) -> dict:
+        """
+        添加数据到数据库
+        :param table:       str  数据表名
+        :param data:        dict 存入数据库的数据字典
+        :param config_dict: dict 存入数据库的配置字典
+        :param user:        dict 用户信息
+        :return dict 添加操作的返回结果字典
+        """
         try:
             self.__mongo_helper.choose_collection(table, is_force=True)
             date = DateHelper.get_today2string()
@@ -50,7 +58,12 @@ class DataManager:
                     "create": date,
                     "modify": date
                 },
-                "data": data
+                "user": {
+                    "create": user["name"],
+                    "modify": user["name"]
+                },
+                "data": data,
+                "config": config_dict
             })
 
             if resp["code"] != 1:
@@ -61,12 +74,23 @@ class DataManager:
             logger.error(traceback.format_exc())
             logger.error(f"Failed to add data! reason: {error}.")
 
-    def update_data(self, table: str, data_id: str, data: dict) -> bool:
+    def update_data(self, table: str, data_id: str, data: dict, config_dict: dict, user: dict) -> bool:
+        """
+        修改数据
+        :param table:       str  数据表名
+        :param data_id:     str  当前数据的 ID
+        :param data:        dict 存入数据库的数据字典
+        :param config_dict: dict 存入数据库的配置字典
+        :param user:        dict 用户信息
+        :return dict 添加操作的返回结果字典
+        """
         try:
             self.__mongo_helper.choose_collection(table)
             resp = self.__mongo_helper.update({"id": data_id}, {
                 "date.modify": DateHelper.get_today2string(),
-                "data": data
+                "user.modify": user["name"],
+                "data": data,
+                "config": config_dict
             })
 
             if resp["code"] != 1:

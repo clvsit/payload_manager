@@ -1,9 +1,9 @@
 {
-    "title": "测试用例",
-    "table": "test",
+    "title": "话术模板",
+    "table": "template",
     "type": "v2",
     "show": {
-        "param": "name"
+        "param": "客户.购买商品"
     },
     "data": [
         {
